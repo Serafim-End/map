@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title>Map</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.45.0/mapbox-gl.js'></script>
+    <script src='https://api.mapbox.com/mapbox.js/plugins/turf/v3.0.11/turf.min.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.45.0/mapbox-gl.css' rel='stylesheet' />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+      }
+
+      .mapboxgl-popup {
+        max-width: 400px;
+        font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+      }
+
+    </style>
+</head>
+<body>
+
+  <style>
+  .map-overlay {
+      font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+      background-color: #fff;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.10);
+      border-radius: 5px;
+      position: absolute;
+      width: 25%;
+      top: 10px;
+      left: 10px;
+      padding: 10px;
+      display: none;
+  }
+  </style>
+
+  <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.2.0/mapbox-gl-geocoder.min.js'></script>
+  <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.2.0/mapbox-gl-geocoder.css' type='text/css' />
+  <div id='map'></div>
+  <div id='map-overlay' class='map-overlay'></div>
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZW5kbmlraXRhIiwiYSI6ImNqZ3ZhNjYxeTB2YzMycm4wNWo2czJzbGgifQ.Y2AsBsP4Ue-0j1ggpIc_QA';
+    var map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/light-v9',
+      center: [45.0, 55.],
+      zoom: 5
+    });
+
+    map.on('load', function() {
+      map.addSource('4049812305537525000', {
+        type: 'geojson',
+        data: 'json_5mln_loc_005mln.geojson'
+        // url: 'mapbox://endnikita.4049812305537525000'
+      });
+
+      map.addLayer({
+        id: 'true_heatmap',
+        type: 'heatmap',
+        source: '4049812305537525000',
+        // 'source-layer': 'json_1mln',
+        maxzoom: 18,
+        paint: {
+          // increase weight as diameter breast height increases
+          'heatmap-weight': {
+            property: 'total_sum',
+            type: 'exponential',
+            stops: [
+              [1, 0],
+              [1000000.0, 1.]
+            ]
+          },
+          // // increase intensity as zoom level increases
+          'heatmap-intensity': {
+            stops: [
+              [11, 1],
+              [20, 3]
+            ]
+          },
+          // assign color values be applied to points depending on their density
+          'heatmap-color': [
+            'interpolate',
+            ['linear'],
+            ['heatmap-density'],
+            0, 'rgba(236,222,239,0)',
+            0.2, 'rgb(208,209,230)',
+            0.4, 'rgb(166,189,219)',
+            0.6, 'rgb(103,169,207)',
+            0.8, 'rgb(28,144,153)'
+          ],
+
+          // increase radius as zoom increases
+          'heatmap-radius': {
+            stops: [
+              [11, 15],
+              [15, 20]
+            ]
+          },
+          // decrease opacity to transition into the circle layer
+          'heatmap-opacity': {
+            default: 1,
+            stops: [
+              [14, 1],
+              [15, 0]
+            ]
+          },
+        }
+      }, 'waterway-label');
+
+      // add heatmap layer here
+      //
+      map.addLayer({
+        id: 'true-point',
+        type: 'circle',
+        source: '4049812305537525000',
+        minzoom: 14,
+        paint: {
+          // increase the radius of the circle as the zoom level and total_cost value increases
+          'circle-radius': {
+            property: 'total_cost',
+            type: 'exponential',
+            stops: [
+              [{ zoom: 15, value: 1 }, 5],
+              [{ zoom: 15, value: 50000 }, 10],
+              [{ zoom: 22, value: 1 }, 20],
+              [{ zoom: 22, value: 50000 }, 50],
+            ]
+          },
+          'circle-color': {
+            property: 'total_cost',
+            type: 'exponential',
+            stops: [
+              [0, 'rgba(236,222,239,0)'],
+              [10, 'rgb(236,222,239)'],
+              [20, 'rgb(208,209,230)'],
+              [30, 'rgb(166,189,219)'],
+              [40, 'rgb(103,169,207)'],
+              [50, 'rgb(28,144,153)'],
+              [60, 'rgb(1,108,89)']
+            ]
+          },
+          'circle-stroke-color': 'white',
+          'circle-stroke-width': 1,
+          'circle-opacity': {
+            stops: [
+              [14, 0],
+              [15, 1]
+            ]
+          }
+        }
+      }, 'waterway-label');
+    //
+    //   // add circle layer here
+      // var popup = new mapboxgl.Popup({
+      //   closeButton: false,
+      //   closeOnClick: false
+      // });
+      //
+      // map.on('mouseenter', '2372587277351623700', function(e) {
+      //   // Change the cursor style as a UI indicator.
+      //   map.getCanvas().style.cursor = 'pointer';
+      //
+      //   var coordinates = e.features[0].geometry.coordinates.slice();
+      //   var description = e.features[0].properties.bill_count;
+      //
+      //   // Ensure that if the map is zoomed out such that multiple
+      //   // copies of the feature are visible, the popup appears
+      //   // over the copy being pointed to.
+      //   while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+      //     coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+      //   }
+      //
+      //   // Populate the popup and set its coordinates
+      //   // based on the feature found.
+      //   popup.setLngLat(coordinates)
+      //     .setHTML(description)
+      //     .addTo(map);
+      // });
+      //
+      // map.on('mouseleave', '2372587277351623700', function() {
+      //   map.getCanvas().style.cursor = '';
+      //   popup.remove();
+      // });
+
+      var overlay = document.getElementById('map-overlay');
+      map.on('mousemove', 'true-point', function(e) {
+        // Change the cursor style as a UI indicator.
+        map.getCanvas().style.cursor = 'pointer';
+
+        // Single out the first found feature.
+        var feature = e.features[0];
+        overlay.innerHTML = '';
+
+        var title = document.createElement('strong');
+        title.textContent = 'Чеки, ' + feature.properties.bill_count + ' обнаружено в этой точке!';
+
+        var total_sum = document.createElement('div');
+        total_sum.textContent = 'Итоговая сумма ' + feature.properties.total_sum + ' всем чекам';
+
+        var total_discount = document.createElement('div');
+        total_discount.textContent = 'Средняя скидка по всем чекам в этой точке: ' + feature.properties.total_discount;
+
+        var average_bill_price = document.createElement('div');
+        average_bill_price.textContent = 'Средняя сумма чека: ' + feature.properties.average_bill_price;
+
+        overlay.appendChild(title);
+        overlay.appendChild(total_sum);
+        overlay.appendChild(total_discount);
+        overlay.appendChild(average_bill_price);
+        overlay.style.display = 'block';
+
+      });
+
+      map.on('mouseleave', 'true-point', function() {
+        map.getCanvas().style.cursor = '';
+        overlay.style.display = 'none';
+      });
+
+    });
+
+    // map.on('click', 'true-point', function(e) {
+    //   new mapboxgl.Popup()
+    //   .setLngLat(e.features[0].geometry.coordinates)
+    //   // .setHTML('<div id=\'popup\' class=\'popup\' style=\'z-index: 10;\'> <h5> Detail: </h5>' +
+    //   //          '<ul class=\'list-group\'>' +
+    //   //          '<li class=\'list-group-item\'> total cost: ' + feature.properties['total_cost'] + ' </li>' +
+    //   //          '<li class=\'list-group-item\'> goods: ' + feature.properties['item_name'] + ' </li></ul></div>')
+    //   .setHTML('<b>Biil count:</b> ' + e.features[0].properties.bill_count)
+    //   .addTo(map);
+    // });
+
+
+  map.addControl(new MapboxGeocoder({
+      accessToken: mapboxgl.accessToken
+  }));
+  map.addControl(new mapboxgl.NavigationControl());
+
+  </script>
+</body>
+</html>
