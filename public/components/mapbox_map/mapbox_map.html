@@ -1,7 +1,23 @@
-<div id="map" style="width: 100%; height: 100%"></div>
+<div id="map"></div>
 <div id="map-overlay" class='map-overlay'>
     <b class="cheques-number">Количество чеков: {{overlay.currentNumberOfCheques}}</b> <br>
-    Итоговая сумма: {{overlay.totalSum | number:2}} <br>
-    Средняя сумма чека: {{overlay.averageBillPrice | number:2}} <br>
-    Суммарная скидка: {{overlay.totalDiscount | number:2}} <br>
+    Итоговая сумма: {{overlay.totalSum | number:2}}₽ <br>
+    Средняя сумма чека: {{overlay.averageBillPrice | number:2}}₽ <br>
+    Суммарная скидка: {{overlay.totalDiscount | number:2}}₽ <br>
+</div>
+
+<div class='map-filter top'>
+    <div class='map-filter-inner'>
+        <h4>Денежная масса</h4>
+        (безналичный и наличный оборот)
+        <label id='month'></label>
+        <input id='slider' type='range' min='0' max='20000000' step='1000' value='0' ng-model="revenueFilter.value"/>
+        <span class="slider-value">{{revenueFilter.value | number}}₽</span>
+    </div>
+    <div class='map-filter-inner'>
+        <div id='legend' class='legend'>
+            <div class='bar'></div>
+            <div>Total sum (₽)</div>
+        </div>
+    </div>
 </div>

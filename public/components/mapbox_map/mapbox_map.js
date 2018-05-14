@@ -8,6 +8,7 @@
             scope: {},
             link: function ($scope) {
                 $scope.overlay = {currentNumberOfCheques: null};
+                $scope.revenueFilter = {value: 0};
 
                 mapboxgl.accessToken = 'pk.eyJ1IjoibWFrYXIiLCJhIjoiOGE4YzlmN2ZkMWEwNTc3MzQ3ODUxMDI0MDhiYjAyYzYifQ.ThEh3pk_BEVntMx2GcI6Sw';
                 const map = new mapboxgl.Map({
@@ -141,43 +142,21 @@
                             $scope.overlay.totalDiscount = feature.properties.total_discount;
                             $scope.overlay.averageBillPrice = feature.properties.average_bill_price;
                         });
-                        //
-                        // console.log($scope.overlay.currentNumberOfCheques);
-                        //
-                        // // Change the cursor style as a UI indicator.
-                        // map.getCanvas().style.cursor = 'pointer';
-                        //
-                        // // Single out the first found feature.
-                        //
-                        // overlay.innerHTML = '';
-                        //
-                        // const title = document.createElement('strong');
-                        // title.textContent = 'Чеки, ' + feature.properties.bill_count + ' обнаружено в этой точке!';
-                        //
-                        // const total_sum = document.createElement('div');
-                        // total_sum.textContent = 'Итоговая сумма ' + Math.round(feature.properties.total_sum)
-                        //     + ' всем чекам';
-                        //
-                        // const total_discount = document.createElement('div');
-                        // total_discount.textContent = 'Средняя скидка по всем чекам в этой точке: ' +
-                        //     Math.round(feature.properties.total_discount);
-                        //
-                        // const average_bill_price = document.createElement('div');
-                        // average_bill_price.textContent = 'Средняя сумма чека: ' +
-                        //     Math.round(feature.properties.average_bill_price);
-                        //
-                        // overlay.appendChild(title);
-                        // overlay.appendChild(total_sum);
-                        // overlay.appendChild(total_discount);
-                        // overlay.appendChild(average_bill_price);
+
                         overlay.style.display = 'block';
 
                     });
 
                     map.on('mouseleave', 'shops-point', function() {
                         map.getCanvas().style.cursor = '';
-                        // overlay.style.display = 'none';
+                        overlay.style.display = 'none';
                     });
+                });
+
+                $scope.$watch('revenueFilter.value', function () {
+                    const filters = ['>=', 'total_sum', $scope.revenueFilter.value];
+                    map.setFilter('shops-point', filters);
+                    map.setFilter('shops-heat', filters);
                 });
             }
         };
