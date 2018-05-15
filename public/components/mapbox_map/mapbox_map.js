@@ -151,12 +151,12 @@
                         map.getCanvas().style.cursor = '';
                         overlay.style.display = 'none';
                     });
-                });
 
-                $scope.$watch('revenueFilter.value', function () {
-                    const filters = ['>=', 'total_sum', $scope.revenueFilter.value];
-                    map.setFilter('shops-point', filters);
-                    map.setFilter('shops-heat', filters);
+                    $scope.$watch('revenueFilter.value', function () {
+                        const filters = ['>=', 'total_sum', $scope.revenueFilter.value];
+                        map.setFilter('shops-point', filters);
+                        map.setFilter('shops-heat', filters);
+                    });
                 });
             }
         };
