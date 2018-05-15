@@ -10,6 +10,10 @@
                 $scope.overlay = {currentNumberOfCheques: null};
                 $scope.revenueFilter = {value: 0};
 
+                $scope.labels = ["Download Sales", "In-Store Sales", "Mail-Order Sales"];
+                $scope.data = [300, 500, 100];
+                $scope.options = {legend: {display: true}};
+
                 mapboxgl.accessToken = 'pk.eyJ1IjoibWFrYXIiLCJhIjoiOGE4YzlmN2ZkMWEwNTc3MzQ3ODUxMDI0MDhiYjAyYzYifQ.ThEh3pk_BEVntMx2GcI6Sw';
                 const map = new mapboxgl.Map({
                     container: 'map',

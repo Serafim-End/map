@@ -6,6 +6,17 @@
     Суммарная скидка: {{overlay.totalDiscount | number:2}}₽ <br>
 </div>
 
+<div class="left-panel">
+    <div class="top-inner-panel">
+        <div class="custom-chart">
+            <canvas id="pie" class="chart chart-pie" height="80%" width="80%"
+                    chart-data="data" chart-labels="labels" chart-options="options">
+            </canvas>
+        </div>
+    </div>
+    <div class="bottom-inner-panel"></div>
+</div>
+
 <div class='map-filter top'>
     <div class='map-filter-inner'>
         <h4>Денежная масса</h4>
