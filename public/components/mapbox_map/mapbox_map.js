@@ -136,6 +136,16 @@
                         }
                     }, 'waterway-label');
 
+                    const draw = new MapboxDraw({
+                        displayControlsDefault: false,
+                        controls: {
+                            polygon: true,
+                            trash: true
+                        }
+                    });
+
+                    map.addControl(draw);
+
                     const overlay = document.getElementById('map-overlay');
                     map.on('mousemove', 'shops-point', function(e) {
                         const feature = e.features[0];

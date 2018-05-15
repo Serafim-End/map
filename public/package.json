@@ -4,6 +4,8 @@
   "description": "",
   "main": "app.js",
   "dependencies": {
+    "@mapbox/mapbox-gl-draw": "^1.0.9",
+    "@turf/turf": "^5.1.6",
     "angular": "^1.7.0",
     "angular-chart.js": "^1.1.1",
     "bootstrap": "^4.1.1",
