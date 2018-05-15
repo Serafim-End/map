@@ -10,9 +10,17 @@
                 $scope.overlay = {currentNumberOfCheques: null};
                 $scope.revenueFilter = {value: 0};
 
-                $scope.labels = ["Download Sales", "In-Store Sales", "Mail-Order Sales"];
-                $scope.data = [300, 500, 100];
-                $scope.options = {legend: {display: true}};
+                $scope.charts = [
+                    {
+                        labels: ["Download Sales", "In-Store Sales", "Mail-Order Sales"],
+                        data: [300, 500, 100]
+                    },
+                    {
+                        labels: ["Download Sales", "In-Store Sales", "Mail-Order Sales"],
+                        data: [3000, 500, 800]
+                    }];
+
+                $scope.chartOptions = {legend: {display: true}};
 
                 mapboxgl.accessToken = 'pk.eyJ1IjoibWFrYXIiLCJhIjoiOGE4YzlmN2ZkMWEwNTc3MzQ3ODUxMDI0MDhiYjAyYzYifQ.ThEh3pk_BEVntMx2GcI6Sw';
                 const map = new mapboxgl.Map({
@@ -145,6 +153,34 @@
                     });
 
                     map.addControl(draw);
+
+                    map.on('draw.create', onSelectionChange);
+                    map.on('draw.delete', onSelectionChange);
+                    map.on('draw.update', onSelectionChange);
+
+                    function isPointInsideMultiplePolygons(p, polygons) {
+                        for (let i = 0; i < polygons.length; i++) {
+                            if (turf.booleanPointInPolygon(p, polygons[i])) {
+                                return true;
+                            }
+                        }
+
+                        return false;
+                    }
+                    
+                    function onSelectionChange() {
+                        const data = draw.getAll();
+                        const visibleFeatures = map.queryRenderedFeatures({layers: ['shops-point']});
+                        const pointsInside = [];
+
+                        visibleFeatures.forEach((f) => {
+                            if (isPointInsideMultiplePolygons(f, data.features)) {
+                                pointsInside.push(f);
+                            }
+                        });
+
+                        console.log(pointsInside);
+                    }
 
                     const overlay = document.getElementById('map-overlay');
                     map.on('mousemove', 'shops-point', function(e) {

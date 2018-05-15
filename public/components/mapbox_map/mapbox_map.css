@@ -86,6 +86,10 @@
 }
 
 .left-panel .bottom-inner-panel {
+    padding-top: 40px;
+}
+
+.left-panel .bottom-inner-panel {
     height: 50%;
     border-bottom: #403A3E 1px solid;
 }
@@ -93,4 +97,8 @@
 .left-panel .top-inner-panel .custom-chart {
     height: 70%;
     width: 100%;
+}
+
+.mapboxgl-ctrl-top-right .mapboxgl-ctrl {
+    margin-top: 250px;
 }
