@@ -1,7 +1,7 @@
 (function () {
     const app = angular.module('SberbankApp');
 
-    app.directive('mapboxMap', [function () {
+    app.directive('mapboxMap', ['$http', function ($http) {
         return {
             restrict: 'E',
             templateUrl: 'components/mapbox_map/mapbox_map.html',
@@ -13,11 +13,11 @@
                 $scope.charts = [
                     {
                         labels: ["Download Sales", "In-Store Sales", "Mail-Order Sales"],
-                        data: [300, 500, 100]
+                        values: [300, 500, 100]
                     },
                     {
                         labels: ["Download Sales", "In-Store Sales", "Mail-Order Sales"],
-                        data: [3000, 500, 800]
+                        values: [3000, 500, 800]
                     }];
 
                 $scope.chartOptions = {legend: {display: true}};
@@ -175,11 +175,19 @@
 
                         visibleFeatures.forEach((f) => {
                             if (isPointInsideMultiplePolygons(f, data.features)) {
-                                pointsInside.push(f);
+                                pointsInside.push(f.point_id);
                             }
                         });
 
-                        console.log(pointsInside);
+                        $http
+                            .post('http://185.203.91.112:1023/api/get_data', {points: pointsInside})
+                            .then(function (response) {
+                                // В случае успешного выполнения запроса, вызывается эта функция
+                                $scope.charts = response.data;
+                            }, function (response) {
+                                // В случае неудачного - эта
+                                console.log(response);
+                            })
                     }
 
                     const overlay = document.getElementById('map-overlay');
