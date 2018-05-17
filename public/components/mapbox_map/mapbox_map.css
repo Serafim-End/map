@@ -1,8 +1,7 @@
 #map {
     position: absolute;
-    left: 20%;
     height: 100%;
-    width: 80%;
+    width: 100%;
 }
 
 .map-overlay {
@@ -13,7 +12,7 @@
     position: absolute;
     width: 350px;
     top: 10px;
-    left: 21%;
+    left: 10px;
     padding: 10px;
     display: none;
     line-height: 1.6;
@@ -72,29 +71,20 @@
     bottom: 0;
 }
 
-.left-panel {
-    height: 100%;
-    width: 20%;
-    position: absolute;
-    left: 0;
-}
-
-.left-panel .top-inner-panel {
+.map-overlay .top-inner-panel {
     height: 50%;
-    border-bottom: #403A3E 1px solid;
-    padding-top: 40px;
+    padding-top: 30px;
 }
 
-.left-panel .bottom-inner-panel {
-    padding-top: 40px;
+.map-overlay .bottom-inner-panel {
+    padding-top: 30px;
 }
 
-.left-panel .bottom-inner-panel {
+.map-overlay .bottom-inner-panel {
     height: 50%;
-    border-bottom: #403A3E 1px solid;
 }
 
-.left-panel .top-inner-panel .custom-chart {
+.map-overlay .top-inner-panel .custom-chart {
     height: 70%;
     width: 100%;
 }
